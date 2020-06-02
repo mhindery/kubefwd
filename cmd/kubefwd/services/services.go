@@ -237,6 +237,8 @@ Try:
 		contexts = append(contexts, rawConfig.CurrentContext)
 	}
 
+	hostFileWLock := &fwdport.HostFileWithLock{Hosts: hostFile}
+
 	for i, ctx := range contexts {
 		// k8s REST config
 		restConfig, err := configGetter.GetRestConfig(cfgFilePath, ctx)
@@ -299,7 +301,7 @@ Try:
 					Namespace:       namespace,
 					NamespaceIPLock: &sync.Mutex{}, // For parallelization of ip handout, each namespace has its own a.b.c.* range
 					ListOptions:     listOptions,
-					Hostfile:        &fwdport.HostFileWithLock{Hosts: hostFile},
+					Hostfile:        hostFileWLock,
 					ClientConfig:    restConfig,
 					RESTClient:      restClient,
 					ShortName:       i < 1 && ii < 1,
